@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>🎂</title>
+  <title>Happy birthday 🎂</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -16,7 +16,7 @@
     </h1>
 
     <p class="message">
-      Ulang tahun ni yee, ada pesan ni 😇
+      Ulang tahun ni yakk, ada pesan ni 😇
     </p>
     <button id="openBtn">Disini 📎</button>
   </div>
@@ -53,13 +53,13 @@
         loopText.textContent = current.substring(0, charIndex--);
         setTimeout(typeLoop, 60);
       } else {
-        deleting = !deleting;
-        if (!deleting) textIndex = (textIndex + 1) % texts.length;
+       // deleting = !deleting;
+        //if (!deleting) textIndex = (textIndex + 1) % texts.length;
         // tambahkan fade saat transisi antar kalimat
-        titleBox.classList.remove("fade");
+       // titleBox.classList.remove("fade");
         void titleBox.offsetWidth; // trigger reflow
-        titleBox.classList.add("fade");
-        setTimeout(typeLoop, 900);
+      //  titleBox.classList.add("fade");
+      //  setTimeout(typeLoop, 900);
       }
     }
 
