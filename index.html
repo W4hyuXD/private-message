@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>🎂</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <canvas id="stars"></canvas>
+
+  <div class="container">
+    <!-- Judul looping typewriter -->
+    <h1 class="title fade" id="titleBox">
+      <span id="loopText"></span><span class="cursor">|</span>
+    </h1>
+
+    <p class="message">
+      Ulang tahun ni yee, ada pesan ni 😇
+    </p>
+    <button id="openBtn">Disini 📎</button>
+  </div>
+
+  <div class="popup" id="popup">
+    <div class="envelope" id="envelope">
+      <div class="flap"></div>
+      <div class="letter">
+        <h2>Happy Birtday Wawa 💌</h2>
+        <div class="letter-content">
+          <p id="typedText"></p>
+        </div>
+        <button id="closeLetter">Tutup</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // === Typewriter looping text ===
+    const texts = ["Halo Wawa 👋", "Happy Birthday 🎉"];
+    const loopText = document.getElementById("loopText");
+    const cursor = document.querySelector(".cursor");
+    const titleBox = document.getElementById("titleBox");
+    let textIndex = 0;
+    let charIndex = 0;
+    let deleting = false;
+
+    function typeLoop() {
+      const current = texts[textIndex];
+      if (!deleting && charIndex <= current.length) {
+        loopText.textContent = current.substring(0, charIndex++);
+        setTimeout(typeLoop, 120);
+      } else if (deleting && charIndex >= 0) {
+        loopText.textContent = current.substring(0, charIndex--);
+        setTimeout(typeLoop, 60);
+      } else {
+        deleting = !deleting;
+        if (!deleting) textIndex = (textIndex + 1) % texts.length;
+        // tambahkan fade saat transisi antar kalimat
+        titleBox.classList.remove("fade");
+        void titleBox.offsetWidth; // trigger reflow
+        titleBox.classList.add("fade");
+        setTimeout(typeLoop, 900);
+      }
+    }
+
+    typeLoop();
+    setInterval(() => cursor.classList.toggle("hidden"), 500);
+
+    // === Confetti efek ===
+    function startConfetti() {
+      const confettiCount = 80;
+      for (let i = 0; i < confettiCount; i++) {
+        const confetti = document.createElement("div");
+        confetti.style.position = "fixed";
+        confetti.style.width = Math.random() * 8 + 4 + "px";
+        confetti.style.height = confetti.style.width;
+        confetti.style.background =
+          "hsl(" + Math.random() * 360 + ", 70%, 70%)";
+        confetti.style.top = "-10px";
+        confetti.style.left = Math.random() * 100 + "vw";
+        confetti.style.opacity = 0.8;
+        confetti.style.borderRadius = "50%";
+        confetti.style.pointerEvents = "none";
+        confetti.style.zIndex = 999;
+        confetti.style.animation = `fall ${
+          3 + Math.random() * 3
+        }s linear forwards`;
+        document.body.appendChild(confetti);
+        setTimeout(() => confetti.remove(), 5000);
+      }
+    }
+
+    const style = document.createElement("style");
+    style.textContent = `
+      @keyframes fall {
+        to {
+          transform: translateY(100vh) rotate(720deg);
+          opacity: 0;
+        }
+      }
+    `;
+    document.head.appendChild(style);
+
+    // === Bintang latar belakang ===
+    const canvas = document.getElementById("stars");
+    const ctx = canvas.getContext("2d");
+    canvas.width = innerWidth;
+    canvas.height = innerHeight;
+
+    const stars = [];
+    for (let i = 0; i < 100; i++) {
+      stars.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        r: Math.random() * 1.5,
+        o: Math.random(),
+      });
+    }
+
+    function drawStars() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = "white";
+      stars.forEach((s) => {
+        ctx.globalAlpha = s.o;
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+        ctx.fill();
+      });
+      requestAnimationFrame(drawStars);
+    }
+    drawStars();
+
+    // === Buka amplop ===
+    const openBtn = document.getElementById("openBtn");
+    const popup = document.getElementById("popup");
+    const envelope = document.getElementById("envelope");
+    const typedText = document.getElementById("typedText");
+    const closeLetter = document.getElementById("closeLetter");
+
+    openBtn.addEventListener("click", () => {
+      popup.classList.add("show");
+      setTimeout(() => {
+        envelope.classList.add("open");
+        startConfetti();
+        typeText(
+          "Selamat ulang tahun yaa ✨\n\nJujur gareti cara ngomong e pie, tapi yowes lah mugo panjang umur, sehat selalu, bahagia jugaa.\nMugo cita-cita/hal-hal seng di pengen i cepet kesampean, sukses terus...\n\nBingung aku arep ngomong opo sumpah gur iki tok seng iso ta sampe ke\naku meh pesen wae sehat-sehat yaa, bahagia terus. 🤍\n\nSepurane ki gur ta kei ucapan tok ga enek kadone xixi😅."
+        );
+      }, 400);
+    });
+
+    closeLetter.addEventListener("click", () => {
+      envelope.classList.remove("open");
+      popup.classList.remove("show");
+      typedText.textContent = "";
+    });
+
+    // efek ngetik isi surat
+    function typeText(text) {
+  typedText.innerHTML = ""; // ubah ke innerHTML supaya bisa render <br>
+  let i = 0;
+  const interval = setInterval(() => {
+    if (text[i] === "\n") {
+      typedText.innerHTML += "<br>";
+    } else {
+      typedText.innerHTML += text[i];
+    }
+    i++;
+    if (i >= text.length) clearInterval(interval);
+  }, 40);
+}
+  </script>
+</body>
+</html>
